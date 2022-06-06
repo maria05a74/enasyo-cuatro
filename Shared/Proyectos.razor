@@ -1,0 +1,180 @@
+﻿@page "/Proyectos"
+@using intentocuatro.Model
+
+
+<h3>Proyectos</h3>
+<MatButton OnClick="@(e => { dialogIsOpen = true; })">Crear</MatButton>
+
+<table class="table">
+    <thead>
+        <tr>
+            <td>
+                ProyectoId
+            </td>
+            <td>
+                NroContrato
+            </td>
+            <td>
+               Nombre
+            </td>
+            <td>
+                Departamento
+            </td>
+            <td>
+                Ciudad
+            </td>
+            <td>
+                TipoObra
+            </td>
+            <td>
+                Valor
+            </td>
+            <td>
+                Editar
+            </td>
+
+            <td>
+                Eliminar
+            </td>
+            
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var proyecto in constructoraDbcontex.proyectos)
+        {
+            <tr>
+                <td>
+                    @proyecto.ProyectoId
+                </td>
+                <td>
+                    @proyecto.NroContrato
+                </td>
+                <td>
+                    @proyecto.Nombre
+                </td>
+                <td>
+                    @proyecto.Departamento
+                </td>
+                <td>
+                    @proyecto.Ciudad
+                </td>
+                <td>
+                    @proyecto.TipoObra
+                </td>
+                <td>
+                    @proyecto.Valor
+                </td>
+
+                <td>
+                <button @onclick="()=>ActualizarProyecto(proyecto)">Actualizar</button>
+                </td>
+
+
+                <td>
+                    <button @onclick="()=>EliminarProyecto(proyecto)">Eliminar</button>
+                </td>
+
+
+            </tr>
+        }
+    </tbody>
+</table>
+<MatDialog @bind-IsOpen="@dialogIsOpen">
+    <MatDialogTitle>Crear Persona</MatDialogTitle>
+    <MatDialogContent>
+
+
+<div class ="forum-group">
+    <label for = "NroContrato">Nro Contrato</label>
+    <input class = "form-control" id="NroContrato" @bind-value = "@proyecto.NroContrato" /> 
+</div>
+
+<div class ="forum-group">
+    <label for = "Nombre">Nombre</label>
+    <input class = "form-control" id="Nombre" @bind-value = "@proyecto.Nombre" /> 
+</div>
+<div class ="forum-group">
+    <label for = "Departamento">Departamento</label>
+<input class = "form-control" id="Departamento" @bind-value = "@proyecto.Departamento" /> 
+</div>
+
+<div class ="forum-group">
+    <label for = "Ciudad">Ciudad</label>
+<input class = "form-control" id="Ciudad" @bind-value = "@proyecto.Ciudad" /> 
+</div>
+
+
+<div class ="forum-group">
+    <label for = "TipoObra">TipoObra</label>
+<input class = "form-control" id="TipoObra" @bind-value = "@proyecto.TipoObra" /> 
+</div>
+
+<div class ="forum-group">
+    <label for = "Valor">Valor</label>
+<input class = "form-control" id="Valor" @bind-value = "@proyecto.Valor" /> 
+</div>
+</MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@(e => { dialogIsOpen = false; proyecto = new Proyecto(); })">Cancelar</MatButton>
+        <MatButton OnClick="@GuardarProyecto">OK</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+
+
+
+@*<button id="btnGuardar" @onclick="GuardarProyecto">
+    Guardar
+</button>*@
+
+
+
+<br/>
+<br/>
+<br/>
+
+
+
+
+
+
+
+@code {
+        protected bool dialogIsOpen { get; set; }
+
+    [Inject]
+    public ConstructoraDbcontex constructoraDbcontex { get; set; }
+    Proyecto proyecto = new Proyecto();
+
+    protected void GuardarProyecto()
+    {
+        if(proyecto.ProyectoId > 0)
+            constructoraDbcontex.proyectos.Update(proyecto);
+        else
+            constructoraDbcontex.proyectos.Add(proyecto);
+        
+        constructoraDbcontex.SaveChanges();
+        dialogIsOpen = false;
+       proyecto= new Proyecto();
+
+    }
+
+    protected void EliminarProyecto(Proyecto proyecto) 
+    {
+
+        constructoraDbcontex.proyectos.Remove(proyecto);
+        constructoraDbcontex.SaveChanges();
+    }
+
+    protected void ActualizarProyecto(Proyecto PROYECTO)
+    {
+        dialogIsOpen = true;
+        proyecto = PROYECTO;
+  //PROYECTO es el objeto parámetro ActualizarProyecto(Proyecto PROYECTO)
+    }
+
+}
+
+
+
+
